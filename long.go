@@ -1,4 +1,4 @@
-package go_murmur3
+package murmur3
 
 // Bits line 347
 func Long0(val int64) byte {

@@ -1,4 +1,4 @@
-package go_murmur3
+package murmur3
 
 //func HandlePrintf(msg interface{}) {
 //	log.Printf("[I] %v", msg)
