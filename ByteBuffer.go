@@ -274,3 +274,9 @@ func (mBB *MurmurByteBuffer) putLongMur3(val int64) {
 		mBB.buffer.putLongL(mBB.buffer.ix(mBB.buffer.nextPutIndex(8)), val)
 	}
 }
+
+// HashCodes line 50 - 52
+func (buf *ByteBuffer) AsInt() int32 {
+	// return this.bytes[0] & 255 | (this.bytes[1] & 255) << 8 | (this.bytes[2] & 255) << 16 | (this.bytes[3] & 255) << 24;
+	return  int32(buf.HB[0]) & 255 | (int32(buf.HB[1]) & 255) << 8 | (int32(buf.HB[2]) & 255) << 16 | (int32(buf.HB[3]) & 255) << 24
+}

@@ -102,7 +102,7 @@ func (m *Murmur3_128Hsher) processRemainingAfterBmixData() {
 	m.process()
 }
 
-func HashString(seed int64, data string) *ByteBufferInt8 {
+func HashString(seed int64, data string) *ByteBuffer {
 	m3 := InitMurmur3_128Hsher(seed)
 	m3.PutString(data)
 
@@ -117,7 +117,7 @@ func HashString(seed int64, data string) *ByteBufferInt8 {
 }
 
 // theo Murmur3_128Hasher, line 108 - 118
-func (m *Murmur3_128Hsher) makeHash() *ByteBufferInt8 {
+func (m *Murmur3_128Hsher) makeHash() *ByteBuffer {
 	m.H1 ^= int64(m.Length)
 	m.H2 ^= int64(m.Length)
 	m.H1 += m.H2
@@ -127,9 +127,9 @@ func (m *Murmur3_128Hsher) makeHash() *ByteBufferInt8 {
 	m.H1 += m.H2
 	m.H2 += m.H1
 
-	heapByte := make([]int8, 16)
+	heapByte := make([]byte, 16)
 
-	bb := &ByteBufferInt8{
+	bb := &ByteBuffer{
 		// isReadOnly false
 		HB:              heapByte,
 		Offset:          0,
