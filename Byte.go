@@ -66,5 +66,5 @@ func (buf *ByteBufferInt8) ix(nextPutIndex int) int {
 // HashCodes line 50 - 52
 func (buf *ByteBufferInt8) AsInt() int32 {
 	// return this.bytes[0] & 255 | (this.bytes[1] & 255) << 8 | (this.bytes[2] & 255) << 16 | (this.bytes[3] & 255) << 24;
-	return  int32(buf.HB[0]) & 255 | (int32(buf.HB[1]) & 255) << 8 | (int32(buf.HB[2]) & 255) << 16 | (int32(buf.HB[3]) & 255) << 24
+	return int32(buf.HB[0])&255 | (int32(buf.HB[1])&255)<<8 | (int32(buf.HB[2])&255)<<16 | (int32(buf.HB[3])&255)<<24
 }

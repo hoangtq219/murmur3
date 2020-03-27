@@ -280,3 +280,24 @@ func (buf *ByteBuffer) AsInt() int32 {
 	// return this.bytes[0] & 255 | (this.bytes[1] & 255) << 8 | (this.bytes[2] & 255) << 16 | (this.bytes[3] & 255) << 24;
 	return  int32(buf.HB[0]) & 255 | (int32(buf.HB[1]) & 255) << 8 | (int32(buf.HB[2]) & 255) << 16 | (int32(buf.HB[3]) & 255) << 24
 }
+
+func (buf *ByteBuffer) ToBytes(val int) []byte {
+	b := make([]byte, 4)
+
+	for i := 3; i > 0; i-- {
+		b[i] = byte(val)
+		val = rightShift(val, 8)
+	}
+
+	b[0] = byte(val)
+	return b
+}
+
+func rightShift(x int, k int) int {
+	const n = 64
+	if x >= 0 {
+		return x>>k
+	} else {
+		return ( x >> k) + (int(2) << (63-k))
+	}
+}
