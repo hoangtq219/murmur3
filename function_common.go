@@ -15,7 +15,7 @@ package murmur3
 //	}
 //}
 
-func ToBytes(val int) []byte {
+func ToBytes(val int64) []byte {
 	b := make([]byte, 8)
 
 	for i := 7; i > 0; i-- {
@@ -27,10 +27,10 @@ func ToBytes(val int) []byte {
 	return b
 }
 
-func RightShift(x int, k int) int {
+func RightShift(x int64, k int) int64 {
 	if x >= 0 {
 		return x>>k
 	} else {
-		return ( x >> k) + (int(2) << (63-k))
+		return ( x >> k) + (int64(2) << (63-k))
 	}
 }
