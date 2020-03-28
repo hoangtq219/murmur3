@@ -27,7 +27,7 @@ func allocateByteBuffer(bufferSize int) *ByteBuffer {
 	}
 }
 
-func InitMurmurByteBuffer(chunkSize int) *MurmurByteBuffer {
+func initMurmurByteBuffer(chunkSize int) *MurmurByteBuffer {
 	mBuff := &MurmurByteBuffer{}
 	mBuff.chunkSize = chunkSize
 	mBuff.bufferSize = chunkSize
@@ -51,14 +51,14 @@ func (buf *ByteBuffer) flip() {
 }
 
 func (buf *ByteBuffer) getLongB(index int) int64 {
-	return MakeLong(Get(buf.HB, index), Get(buf.HB, index+1), Get(buf.HB, index+2), Get(buf.HB, index+3), Get(buf.HB, index+4), Get(buf.HB, index+5), Get(buf.HB, index+6), Get(buf.HB, index+7))
+	return makeLong(get(buf.HB, index), get(buf.HB, index+1), get(buf.HB, index+2), get(buf.HB, index+3), get(buf.HB, index+4), get(buf.HB, index+5), get(buf.HB, index+6), get(buf.HB, index+7))
 }
 
 func (buf *ByteBuffer) getLongL(index int) int64 {
-	return MakeLong(Get(buf.HB, index+7), Get(buf.HB, index+6), Get(buf.HB, index+5), Get(buf.HB, index+4), Get(buf.HB, index+3), Get(buf.HB, index+2), Get(buf.HB, index+1), Get(buf.HB, index))
+	return makeLong(get(buf.HB, index+7), get(buf.HB, index+6), get(buf.HB, index+5), get(buf.HB, index+4), get(buf.HB, index+3), get(buf.HB, index+2), get(buf.HB, index+1), get(buf.HB, index))
 }
 
-func (buf *ByteBuffer) nextGetIndex(var1 int) int {
+func (buf *ByteBuffer) nextgetIndex(var1 int) int {
 	if buf.Limit-buf.Position < var1 {
 		log.Println("[E] Buffer Underflow Exception")
 	} else {
@@ -71,9 +71,9 @@ func (buf *ByteBuffer) nextGetIndex(var1 int) int {
 
 func (buf *ByteBuffer) getLong() int64 {
 	if buf.BigEndian {
-		return buf.getLongB(buf.ix(buf.nextGetIndex(8)))
+		return buf.getLongB(buf.ix(buf.nextgetIndex(8)))
 	} else {
-		return buf.getLongL(buf.ix(buf.nextGetIndex(8)))
+		return buf.getLongL(buf.ix(buf.nextgetIndex(8)))
 	}
 }
 
@@ -137,25 +137,25 @@ func (buf *ByteBuffer) nextPutIndex(var1 int) int {
 }
 
 func (buf *ByteBuffer) putLongB(index int, val int64) {
-	buf.HB[index] = Long7(val)
-	buf.HB[index+1] = Long6(val)
-	buf.HB[index+2] = Long5(val)
-	buf.HB[index+3] = Long4(val)
-	buf.HB[index+4] = Long3(val)
-	buf.HB[index+5] = Long2(val)
-	buf.HB[index+6] = Long1(val)
-	buf.HB[index+7] = Long0(val)
+	buf.HB[index] = long7(val)
+	buf.HB[index+1] = long6(val)
+	buf.HB[index+2] = long5(val)
+	buf.HB[index+3] = long4(val)
+	buf.HB[index+4] = long3(val)
+	buf.HB[index+5] = long2(val)
+	buf.HB[index+6] = long1(val)
+	buf.HB[index+7] = long0(val)
 }
 
 func (buf *ByteBuffer) putLongL(index int, val int64) {
-	buf.HB[index+7] = Long7(val)
-	buf.HB[index+6] = Long6(val)
-	buf.HB[index+5] = Long5(val)
-	buf.HB[index+4] = Long4(val)
-	buf.HB[index+3] = Long3(val)
-	buf.HB[index+2] = Long2(val)
-	buf.HB[index+1] = Long1(val)
-	buf.HB[index] = Long0(val)
+	buf.HB[index+7] = long7(val)
+	buf.HB[index+6] = long6(val)
+	buf.HB[index+5] = long5(val)
+	buf.HB[index+4] = long4(val)
+	buf.HB[index+3] = long3(val)
+	buf.HB[index+2] = long2(val)
+	buf.HB[index+1] = long1(val)
+	buf.HB[index] = long0(val)
 }
 
 func (buf *ByteBuffer) putLong(val int64) {
@@ -200,5 +200,5 @@ func (buf *ByteBuffer) ToBytes() []byte {
 	Trả về chuỗi hash dài 32 bytes được tạo từ 16 bytes ban đầu của H1 và H2
 */
 func (buf *ByteBuffer) ToString() string {
-	return ToString(buf.HB)
+	return toString(buf.HB)
 }

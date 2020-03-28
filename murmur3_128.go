@@ -17,16 +17,16 @@ type Murmur3_128Hasher struct {
 	bb *MurmurByteBuffer
 }
 
-func InitMurmur3_128Hsher(seed int64) *Murmur3_128Hasher {
-	murmur := &Murmur3_128Hasher{}
-	murmur.H1 = seed
-	murmur.H2 = seed
-	murmur.Length = 0
-	murmur.bb = InitMurmurByteBuffer(CHUNK_SIZE)
-	return murmur
+func initMurmur3_128Hsher(seed int64) *Murmur3_128Hasher {
+	return &Murmur3_128Hasher{
+		H1:     seed,
+		H2:     seed,
+		Length: 0,
+		bb:     initMurmurByteBuffer(CHUNK_SIZE),
+	}
 }
 
-func (m *Murmur3_128Hasher) PutString(CharSequence string) {
+func (m *Murmur3_128Hasher) putString(CharSequence string) {
 	for i := 0; i < len(CharSequence); i++ {
 		//log.Printf("position: %d, limit: %d", m.bb.buffer.position, m.bb.buffer.limit)
 		m.putChar(CharSequence[i])
@@ -64,11 +64,11 @@ func (m *Murmur3_128Hasher) process() {
 
 func (m *Murmur3_128Hasher) bmix64(k1, k2 int64) {
 	m.H1 ^= mixK1(k1)
-	m.H1 = RotateLeft(m.H1, 27)
+	m.H1 = rotateLeft(m.H1, 27)
 	m.H1 += m.H2
 	m.H1 = m.H1*5 + 1390208809
 	m.H2 ^= mixK2(k2)
-	m.H2 = RotateLeft(m.H2, 31)
+	m.H2 = rotateLeft(m.H2, 31)
 	m.H2 += m.H1
 	m.H2 = m.H2*5 + 944331445
 }
@@ -86,8 +86,8 @@ func (m *Murmur3_128Hasher) processRemainingAfterBmixData() {
 }
 
 func HashString(seed int64, data string) *ByteBuffer {
-	m3 := InitMurmur3_128Hsher(seed)
-	m3.PutString(data)
+	m3 := initMurmur3_128Hsher(seed)
+	m3.putString(data)
 
 	m3.munch()
 	m3.bb.buffer.flip()
@@ -125,24 +125,24 @@ func (m *Murmur3_128Hasher) makeHash() *ByteBuffer {
 }
 
 func fmix64(k int64) int64 {
-	k = k ^ RightShift(k, 33)
+	k = k ^ rightShift(k, 33)
 	k *= -49064778989728563
-	k = k ^ RightShift(k,33)
+	k = k ^ rightShift(k,33)
 	k *= -4265267296055464877
-	k = k ^ RightShift(k,33)
+	k = k ^ rightShift(k,33)
 	return k
 }
 
 func mixK1(k1 int64) int64 {
 	k1 *= c1
-	k1 = RotateLeft(k1, 31)
+	k1 = rotateLeft(k1, 31)
 	k1 *= c2
 	return k1
 }
 
 func mixK2(k2 int64) int64 {
 	k2 *= c2
-	k2 = RotateLeft(k2, 33)
+	k2 = rotateLeft(k2, 33)
 	k2 *= c1
 	return k2
 }
