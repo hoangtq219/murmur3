@@ -1,29 +1,24 @@
 package murmur3
 
 import (
-	"errors"
+	"log"
 )
 
-const (
-	CHUNK_SIZE = 16
-	c1         = -8663945395140668459
-	c2         = 5545529020109919103
-)
 /*
     ###############################
     ##     guava version13.0     ##
     ###############################
 */
 
-type Murmur3_128Hsher struct {
+type Murmur3_128Hasher struct {
 	H1     int64
 	H2     int64
 	Length int
 	bb *MurmurByteBuffer
 }
 
-func InitMurmur3_128Hsher(seed int64) *Murmur3_128Hsher {
-	murmur := &Murmur3_128Hsher{}
+func InitMurmur3_128Hsher(seed int64) *Murmur3_128Hasher {
+	murmur := &Murmur3_128Hasher{}
 	murmur.H1 = seed
 	murmur.H2 = seed
 	murmur.Length = 0
@@ -31,26 +26,26 @@ func InitMurmur3_128Hsher(seed int64) *Murmur3_128Hsher {
 	return murmur
 }
 
-func (m *Murmur3_128Hsher) PutString(CharSequence string) {
+func (m *Murmur3_128Hasher) PutString(CharSequence string) {
 	for i := 0; i < len(CharSequence); i++ {
 		//log.Printf("position: %d, limit: %d", m.bb.buffer.position, m.bb.buffer.limit)
-		m.putChar(i, CharSequence[i])
+		m.putChar(CharSequence[i])
 		m.munchIfFull()
 	}
 }
 
-func (m *Murmur3_128Hsher) putChar(index int, val byte) {
+func (m *Murmur3_128Hasher) putChar(val byte) {
 	//HandlePrintf("putChar: " + strconv.FormatInt(int64(index), 10))
-	m.bb.buffer.putCharL( m.bb.buffer.ix(m.bb.buffer.nextPutIndex(2)), val)
+	m.bb.putCharL( m.bb.ix(m.bb.nextPutIndex(2)), val)
 }
 
-func (m *Murmur3_128Hsher) munchIfFull() {
+func (m *Murmur3_128Hasher) munchIfFull() {
 	if m.bb.remaining() < 8 {
 		m.munch()
 	}
 }
 
-func (m *Murmur3_128Hsher) munch() {
+func (m *Murmur3_128Hasher) munch() {
 	//log.Printf("remaining = %d, position: %d, limit: %d", m.bb.remaining(), m.bb.position(), m.bb.limit())
 	m.bb.flip()
 	for m.bb.remaining() >= m.bb.chunkSize {
@@ -59,15 +54,15 @@ func (m *Murmur3_128Hsher) munch() {
 	m.bb.buffer.compact()
 }
 
-func (m *Murmur3_128Hsher) process() {
-	k1 := m.bb.buffer.getLong()
-	k2 := m.bb.buffer.getLong()
+func (m *Murmur3_128Hasher) process() {
+	k1 := m.bb.getLong()
+	k2 := m.bb.getLong()
 
 	m.bmix64(k1, k2)
 	m.Length += 16
 }
 
-func (m *Murmur3_128Hsher) bmix64(k1, k2 int64) {
+func (m *Murmur3_128Hasher) bmix64(k1, k2 int64) {
 	m.H1 ^= mixK1(k1)
 	m.H1 = RotateLeft(m.H1, 27)
 	m.H1 += m.H2
@@ -78,7 +73,7 @@ func (m *Murmur3_128Hsher) bmix64(k1, k2 int64) {
 	m.H2 = m.H2*5 + 944331445
 }
 
-func (m *Murmur3_128Hsher) processRemainingAfterBmixData() {
+func (m *Murmur3_128Hasher) processRemainingAfterBmixData() {
 	m.bb.positionFunc(m.bb.limit())
 	m.bb.limitFunc(m.bb.chunkSize + 7)
 
@@ -102,7 +97,7 @@ func HashString(seed int64, data string) *ByteBuffer {
 	return m3.makeHash()
 }
 
-func (m *Murmur3_128Hsher) makeHash() *ByteBuffer {
+func (m *Murmur3_128Hasher) makeHash() *ByteBuffer {
 	m.H1 ^= int64(m.Length)
 	m.H2 ^= int64(m.Length)
 	m.H1 += m.H2
@@ -112,11 +107,9 @@ func (m *Murmur3_128Hsher) makeHash() *ByteBuffer {
 	m.H1 += m.H2
 	m.H2 += m.H1
 
-	heapByte := make([]byte, 16)
-
 	bb := &ByteBuffer{
 		// isReadOnly false
-		HB:              heapByte,
+		HB:              make([]byte, 16),
 		Offset:          0,
 		Mark:            -1,
 		Position:        0,
@@ -154,14 +147,17 @@ func mixK2(k2 int64) int64 {
 	return k2
 }
 
-func (m *Murmur3_128Hsher) processRemaining() {
+/*
+	Sau khi kết thúc quá trình putChar, nếu số bytes còn lại > 0 (các byte này vẫn chưa được process với bmix64)
+tiến hành process remaining với số bytes còn lại này trước khi hash
+*/
+func (m *Murmur3_128Hasher) processRemaining() {
 	var k1 int64 = 0
 	var k2 int64 = 0
 
 	m.Length += m.bb.remaining()
-	value := m.bb.remaining()
 
-	switch value {
+	switch m.bb.remaining() {
 	case 7:
 		k1 ^= int64(m.bb.get(6)) << 48
 		fallthrough
@@ -209,7 +205,7 @@ func (m *Murmur3_128Hsher) processRemaining() {
 		k1 ^= m.bb.getLong()
 		break
 	default:
-		errors.New("Should never get here.")
+		log.Println("[E] Should never get here")
 	}
 
 	m.H1 ^= mixK1(k1)
