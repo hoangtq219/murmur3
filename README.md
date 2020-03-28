@@ -36,3 +36,7 @@ m3_128.AsBytes()
 // output: [182 25 164 232]
 ```
 
+LICENSE 
+---
+
+Copyright (c) 2020 Platform BigData Adtech Admicro
