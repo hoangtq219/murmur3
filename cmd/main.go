@@ -7,11 +7,11 @@ import (
 )
 
 func main()  {
-	m3_128 := murmur3.HashString(-1467523828, "681236075540516864")
+	m3_128 := murmur3.HashString(-121254478, "681236075540516864")
 
+	log.Println(m3_128.AsInt())
 	log.Println(m3_128.AsBytes())
 	log.Println(m3_128.ToBytes())
-	log.Println(m3_128.AsInt())
 	log.Println(m3_128.ToString())
 
 	key := append(m3_128.AsBytes(), murmur3.IntToBytes("681236075540516864")...)

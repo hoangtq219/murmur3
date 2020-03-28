@@ -17,23 +17,37 @@ Ouput
 Examples: 
 
 ```go
-m3_128 := murmur3.HashString(-1467523828, "681236075540516864")
+m3_128 := murmur3.HashString(-121254478, "681236075540516864")
  
 // AsInt()
 m3_128.AsInt() 
-// output: -1239833368
-
-// ToString()
-m3_128.ToString() 
-// output: e8a419b6a02dd4769f55b02614e8644e 
-
-// ToBytes() 
-m3_128.ToBytes() 
-// output: [232 164 25 182 160 45 212 118 159 85 176 38 20 232 100 78]
+// output: 257976075
 
 // AsBytes() 
 m3_128.AsBytes() 
-// output: [182 25 164 232]
+// output:[15 96 103 11]
+
+// ToBytes() 
+m3_128.ToBytes() 
+// output: [11 103 96 15 2 251 20 14 21 75 88 130 194 211 36 22]
+
+// ToString()
+m3_128.ToString() 
+// output: 0b67600f02fb140e154b5882c2d32416
+
+```
+
+**Gen key**  
+
+> Tạo key gồm 20 bytes 
+
+```go
+m3_128 := murmur3.HashString(-121254478, "681236075540516864")
+
+key := append(m3_128.AsBytes(), murmur3.IntToBytes("681236075540516864")...)
+key = append(key, murmur3.IntToBytes("17480678941457235")...)
+fmt.Println(key)
+// output: [15 96 103 11 9 116 60 153 242 198 16 0 0 62 26 149 186 188 251 83]
 ```
 
 LICENSE 

@@ -85,6 +85,9 @@ func (m *Murmur3_128Hasher) processRemainingAfterBmixData() {
 	m.process()
 }
 
+/*
+	Trả về một mảng 128 bits (16 bytes) là kết quả Hash của data với Murmur3
+*/
 func HashString(seed int64, data string) *ByteBuffer {
 	m3 := initMurmur3_128Hsher(seed)
 	m3.putString(data)
