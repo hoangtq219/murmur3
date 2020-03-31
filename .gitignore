@@ -23,6 +23,7 @@ build/
 **/logs
 *.log
 *.tmp
+murmur3.txt
 
 # IntelliJ project files
 .idea

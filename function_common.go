@@ -45,11 +45,6 @@ func toString(bytes []byte) string {
 	return output.String()
 }
 
-//func rotateLeft1(x int64, k int) int64 {
-//	const n = 64
-//	return x<<k | int64(uint64(x)>>(n-k))
-//}
-
 func rotateLeft(x int64, k uint) int64 {
 	const n = 64
 	return x<<k | int64(uint64(x)>>(n-k))

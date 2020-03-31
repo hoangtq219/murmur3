@@ -21,7 +21,6 @@ func TestHashMurmur( t *testing.T)  {
 	for _ , line := range lines {
 		input := strings.Split(line, " ")
 		if len(input) == 3 {
-			//fmt.Println(input[0], input[1], input[2])
 			seed,_ := strconv.Atoi(input[0])
 			result,_ := strconv.Atoi(input[2])
 			postID := input[1]
@@ -31,14 +30,14 @@ func TestHashMurmur( t *testing.T)  {
 				 check = false
 			}
 		} else {
-			fmt.Println("Len(line) != 3")
+			fmt.Println("Len(line) != 3", line)
 		}
 	}
 
 	if !check {
-		fmt.Println("False!!!")
+		fmt.Println("False :(")
 	} else {
-		fmt.Println("OK!!!")
+		fmt.Println("OK (^-^)")
 	}
 
 }
