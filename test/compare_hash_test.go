@@ -11,7 +11,7 @@ import (
 )
 
 func TestHashMurmur( t *testing.T)  {
-	lines, err := readLines("/storage/Learn/Work/Learn/murmur3/murmur3.txt")
+	lines, err := readLines("murmur3.txt")
 	if err != nil {
 		fmt.Println(err)
 	}
