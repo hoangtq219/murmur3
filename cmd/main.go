@@ -7,6 +7,7 @@ import (
 )
 
 func main()  {
+
 	m3_128 := murmur3.HashString(-121254478, "681236075540516864")
 
 	log.Println(m3_128.AsInt())

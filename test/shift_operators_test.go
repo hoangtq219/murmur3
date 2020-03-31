@@ -7,7 +7,7 @@ import (
 
 func TestZeroShiftRight(t *testing.T)  {
 	var result int64 = 0
-	k := 33
+	k := uint(33)
 	var x int64 = -3984010896604591268
 	if x >= 0 {
 		result =  x>>k

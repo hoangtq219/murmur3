@@ -45,7 +45,12 @@ func toString(bytes []byte) string {
 	return output.String()
 }
 
-func rotateLeft(x int64, k int) int64 {
+//func rotateLeft1(x int64, k int) int64 {
+//	const n = 64
+//	return x<<k | int64(uint64(x)>>(n-k))
+//}
+
+func rotateLeft(x int64, k uint) int64 {
 	const n = 64
 	return x<<k | int64(uint64(x)>>(n-k))
 }
@@ -59,7 +64,7 @@ n >>> s
 Bonus:
 	* ~s as a shift distance is equivalent to `31 - s` when shifting an int value and to `63 - s` when shifting a long value
 */
-func rightShift(x int64, k int) int64 {
+func rightShift(x int64, k uint) int64 {
 	if x >= 0 {
 		return x>>k
 	} else {
