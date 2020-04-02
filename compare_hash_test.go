@@ -1,45 +1,46 @@
-package test
+package murmur3
 
 import (
 	"bufio"
 	"fmt"
-	"murmur3"
 	"os"
 	"strconv"
 	"strings"
 	"testing"
 )
 
-func TestHashMurmur( t *testing.T)  {
-	lines, err := readLines("murmur3.txt")
+func TestHashMurmur3_128(t *testing.T) {
+	lines, err := readLines("/storage/Learn/Work/MyRepositories/murmur3/murmur3.txt")
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	check := true
+	total := 0
+	cntCorrect := 0
 
-	for _ , line := range lines {
+	for _, line := range lines {
 		input := strings.Split(line, " ")
 		if len(input) == 3 {
-			seed,_ := strconv.Atoi(input[0])
-			result,_ := strconv.Atoi(input[2])
+			total++
+			seed, _ := strconv.Atoi(input[0])
+			result, _ := strconv.Atoi(input[2])
 			postID := input[1]
-			output := murmur3.HashString(int64(seed), postID).AsInt()
+			output := HashString(int64(seed), postID).AsInt()
 			if output != result {
-				 fmt.Println(line)
-				 check = false
+				fmt.Println(line)
+			} else {
+				cntCorrect++
 			}
 		} else {
 			fmt.Println("Len(line) != 3", line)
 		}
 	}
 
-	if !check {
-		fmt.Println("False :(")
+	if cntCorrect != total {
+		fmt.Printf("Exactly %.2f", float32(cntCorrect*100/total))
 	} else {
-		fmt.Println("OK (^-^)")
+		fmt.Println("Exactly 100% ^v^")
 	}
-
 }
 
 func readLines(path string) ([]string, error) {
@@ -56,5 +57,3 @@ func readLines(path string) ([]string, error) {
 	}
 	return lines, scanner.Err()
 }
-
-

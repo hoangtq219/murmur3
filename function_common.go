@@ -22,6 +22,7 @@ func handleErrorFatalf(err interface{}) {
 	}
 }
 
+// Convert integer to byte array
 func toBytes(val int64) []byte {
 	b := make([]byte, 8)
 	for i := 7; i > 0; i-- {
@@ -39,8 +40,8 @@ func toString(bytes []byte) string {
 	var output strings.Builder
 	for i := 0; i < len(bytes); i++ {
 		b := int8(bytes[i])
-		output.WriteByte(HexDigits[b >> 4 & 15])
-		output.WriteByte(HexDigits[b & 15])
+		output.WriteByte(HexDigits[b>>4&15])
+		output.WriteByte(HexDigits[b&15])
 	}
 	return output.String()
 }
@@ -61,9 +62,9 @@ Bonus:
 */
 func rightShift(x int64, k uint) int64 {
 	if x >= 0 {
-		return x>>k
+		return x >> k
 	} else {
-		return ( x >> k) + (int64(2) << (63-k))
+		return (x >> k) + (int64(2) << (63 - k))
 	}
 }
 
@@ -99,7 +100,6 @@ func long7(val int64) byte {
 	return byte(int(val >> 56))
 }
 
-
 func get(buffer []byte, index int) byte {
 	return buffer[index]
 }
@@ -108,6 +108,7 @@ func makeLong(var0, var1, var2, var3, var4, var5, var6, var7 byte) int64 {
 	return int64(var0)<<56 | (int64(var1)&255)<<48 | (int64(var2)&255)<<40 | (int64(var3)&255)<<32 | (int64(var4)&255)<<24 | (int64(var5)&255)<<16 | (int64(var6)&255)<<8 | (int64(var7))&255
 }
 
+// Convert integer (string) to byte array
 func IntToBytes(input string) []byte {
 	number, _ := strconv.Atoi(input)
 	return toBytes(int64(number))

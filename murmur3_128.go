@@ -5,16 +5,16 @@ import (
 )
 
 /*
-    ###############################
-    ##     guava version13.0     ##
-    ###############################
+   ###############################
+   ##     guava version13.0     ##
+   ###############################
 */
 
 type Murmur3_128Hasher struct {
 	H1     int64
 	H2     int64
 	Length int
-	bb *MurmurByteBuffer
+	bb     *MurmurByteBuffer
 }
 
 func initMurmur3_128Hsher(seed int64) *Murmur3_128Hasher {
@@ -34,9 +34,10 @@ func (m *Murmur3_128Hasher) putString(CharSequence string) {
 	}
 }
 
+// Puts a character into this sink.
 func (m *Murmur3_128Hasher) putChar(val byte) {
 	//HandlePrintf("putChar: " + strconv.FormatInt(int64(index), 10))
-	m.bb.putCharL( m.bb.ix(m.bb.nextPutIndex(2)), val)
+	m.bb.putCharL(m.bb.ix(m.bb.nextPutIndex(2)), val)
 }
 
 func (m *Murmur3_128Hasher) munchIfFull() {
@@ -85,9 +86,7 @@ func (m *Murmur3_128Hasher) processRemainingAfterBmixData() {
 	m.process()
 }
 
-/*
-	Trả về một mảng 128 bits (16 bytes) là kết quả Hash của data với Murmur3
-*/
+// HashString returns a 128 bits hasher set with explicit seed value
 func HashString(seed int64, data string) *ByteBuffer {
 	m3 := initMurmur3_128Hsher(seed)
 	m3.putString(data)
@@ -100,6 +99,7 @@ func HashString(seed int64, data string) *ByteBuffer {
 	return m3.makeHash()
 }
 
+// Computes a hash code based on the data that have been provided to this hasher
 func (m *Murmur3_128Hasher) makeHash() *ByteBuffer {
 	m.H1 ^= int64(m.Length)
 	m.H2 ^= int64(m.Length)
@@ -127,12 +127,13 @@ func (m *Murmur3_128Hasher) makeHash() *ByteBuffer {
 	return bb
 }
 
+// Finalization mix - force all bits of a hash block to avalanche
 func fmix64(k int64) int64 {
 	k = k ^ rightShift(k, 33)
 	k *= -49064778989728563
-	k = k ^ rightShift(k,33)
+	k = k ^ rightShift(k, 33)
 	k *= -4265267296055464877
-	k = k ^ rightShift(k,33)
+	k = k ^ rightShift(k, 33)
 	return k
 }
 

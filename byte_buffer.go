@@ -1,9 +1,5 @@
 package murmur3
 
-import (
-	"log"
-)
-
 type ByteBuffer struct {
 	HB              []byte
 	Offset          int
@@ -25,14 +21,6 @@ func allocateByteBuffer(bufferSize int) *ByteBuffer {
 		Capacity:        bufferSize,
 		NativeByteOrder: true,
 	}
-}
-
-func initMurmurByteBuffer(chunkSize int) *MurmurByteBuffer {
-	mBuff := &MurmurByteBuffer{}
-	mBuff.chunkSize = chunkSize
-	mBuff.bufferSize = chunkSize
-	mBuff.buffer = allocateByteBuffer(mBuff.bufferSize + 7)
-	return mBuff
 }
 
 func (buf *ByteBuffer) putCharL(index int, val byte) {
@@ -58,9 +46,9 @@ func (buf *ByteBuffer) getLongL(index int) int64 {
 	return makeLong(get(buf.HB, index+7), get(buf.HB, index+6), get(buf.HB, index+5), get(buf.HB, index+4), get(buf.HB, index+3), get(buf.HB, index+2), get(buf.HB, index+1), get(buf.HB, index))
 }
 
-func (buf *ByteBuffer) nextgetIndex(var1 int) int {
+func (buf *ByteBuffer) nextGetIndex(var1 int) int {
 	if buf.Limit-buf.Position < var1 {
-		log.Println("[E] Buffer Underflow Exception")
+		handleWarnPrintf("Buffer Underflow Exception")
 	} else {
 		var2 := buf.Position
 		buf.Position += var1
@@ -71,9 +59,9 @@ func (buf *ByteBuffer) nextgetIndex(var1 int) int {
 
 func (buf *ByteBuffer) getLong() int64 {
 	if buf.BigEndian {
-		return buf.getLongB(buf.ix(buf.nextgetIndex(8)))
+		return buf.getLongB(buf.ix(buf.nextGetIndex(8)))
 	} else {
-		return buf.getLongL(buf.ix(buf.nextgetIndex(8)))
+		return buf.getLongL(buf.ix(buf.nextGetIndex(8)))
 	}
 }
 
@@ -102,7 +90,7 @@ func (buf *ByteBuffer) position(var1 int) {
 			buf.Mark = -1
 		}
 	} else {
-		log.Println("[E] Illegal Argument Exception")
+		handleWarnPrintf("Illegal Argument Exception")
 	}
 }
 
@@ -117,7 +105,7 @@ func (buf *ByteBuffer) limit(chunkSize int) {
 			buf.Mark = -1
 		}
 	} else {
-		log.Println("[E] Illegal Argument Exception")
+		handleWarnPrintf("Illegal Argument Exception")
 	}
 }
 
@@ -127,7 +115,7 @@ func (buf *ByteBuffer) ix(nextPutIndex int) int {
 
 func (buf *ByteBuffer) nextPutIndex(var1 int) int {
 	if buf.Limit-buf.Position < var1 {
-		log.Println("[E] Buffer Overflow Exception!")
+		handleWarnPrintf("Buffer Overflow Exception!")
 		return -1
 	} else {
 		var2 := buf.Position
@@ -158,6 +146,7 @@ func (buf *ByteBuffer) putLongL(index int, val int64) {
 	buf.HB[index] = long0(val)
 }
 
+// Puts a long into this sink.
 func (buf *ByteBuffer) putLong(val int64) {
 	if buf.BigEndian {
 		buf.putLongB(buf.ix(buf.nextPutIndex(8)), val)
@@ -170,35 +159,28 @@ func (buf *ByteBuffer) checkIndex(index int) int {
 	if index >= 0 && index < buf.Limit {
 		return index
 	} else {
-		log.Println(" [E] Array Index Out Of Bounds Exception")
+		handleWarnPrintf("Array Index Out Of Bounds Exception")
 	}
 	return -1
 }
 
-/*
-	The first 4 bytes to integer 32 bit
-*/
+// AsInt() Returns the first four bytes of this hashcode's byte, converted to an int value little-endian order
 func (buf *ByteBuffer) AsInt() int {
-	return  int(int32(buf.HB[0]) & 255 | (int32(buf.HB[1]) & 255) << 8 | (int32(buf.HB[2]) & 255) << 16 | (int32(buf.HB[3]) & 255) << 24)
+	return int(int32(buf.HB[0])&255 | (int32(buf.HB[1])&255)<<8 | (int32(buf.HB[2])&255)<<16 | (int32(buf.HB[3])&255)<<24)
 }
 
-/*
-	Trả về mảng 4 bytes đầu tiên, theo thứ tự ngược lại, dùng để ghép key sử dụng get row trong Hbase
-*/
+// AsBytes() Returns the first four bytes of this hash code as a byte array.
 func (buf *ByteBuffer) AsBytes() []byte {
 	return []byte{buf.HB[3], buf.HB[2], buf.HB[1], buf.HB[0]}
 }
 
-/*
-	Trả về 16 bytes, chính là H1, H2 ở dạng bytes
-*/
+// AsBytes() Returns the value of this hash code as a byte array.
 func (buf *ByteBuffer) ToBytes() []byte {
 	return buf.HB
 }
 
-/*
-	Trả về chuỗi hash dài 32 bytes được tạo từ 16 bytes ban đầu của H1 và H2
-*/
+// ToString() Returns a string containing each byte of ToBytes(), in order, as a two-digit unsigned hexadecimal number in lower case.
+// Note that if the output is considered to be a single hexadecimal number, this hash code's bytes are the big-endian representation of that number.
 func (buf *ByteBuffer) ToString() string {
 	return toString(buf.HB)
 }

@@ -13,6 +13,14 @@ type MurmurByteBuffer struct {
 	chunkSize  int
 }
 
+func initMurmurByteBuffer(chunkSize int) *MurmurByteBuffer {
+	return &MurmurByteBuffer{
+		buffer:     allocateByteBuffer(chunkSize + 7),
+		bufferSize: chunkSize,
+		chunkSize:  chunkSize,
+	}
+}
+
 func (mBB *MurmurByteBuffer) positionFunc(limit int) {
 	mBB.buffer.position(limit)
 }
@@ -33,6 +41,7 @@ func (mBB *MurmurByteBuffer) remaining() int {
 	return mBB.buffer.Limit - mBB.buffer.Position
 }
 
+// Puts a long into this sink.
 func (mBB *MurmurByteBuffer) putLong(val int64) {
 	mBB.buffer.putLong(val)
 }
