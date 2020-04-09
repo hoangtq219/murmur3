@@ -2,6 +2,7 @@ package murmur3
 
 import (
 	"log"
+	"strings"
 )
 
 /*
@@ -17,7 +18,7 @@ type Murmur3_128Hasher struct {
 	bb     *MurmurByteBuffer
 }
 
-func initMurmur3_128Hsher(seed int64) *Murmur3_128Hasher {
+func initMurmur3_128Hasher(seed int64) *Murmur3_128Hasher {
 	return &Murmur3_128Hasher{
 		H1:     seed,
 		H2:     seed,
@@ -88,7 +89,7 @@ func (m *Murmur3_128Hasher) processRemainingAfterBmixData() {
 
 // HashString returns a 128 bits hasher set with explicit seed value
 func HashString(seed int64, data string) *ByteBuffer {
-	m3 := initMurmur3_128Hsher(seed)
+	m3 := initMurmur3_128Hasher(seed)
 	m3.putString(data)
 
 	m3.munch()
@@ -97,6 +98,25 @@ func HashString(seed int64, data string) *ByteBuffer {
 		m3.processRemaining()
 	}
 	return m3.makeHash()
+}
+
+func HashStringCustom(seed int64, data, userId string) []byte {
+	result := make([]byte, 0)
+	splits :=strings.Split(data, "_")
+	if len(splits) == 1 {
+		m3 := HashString(seed, data)
+		result = m3.AsIntBytes()
+		result = append(result, IntToBytes(data)...)
+		result = append(result, IntToBytes(userId)...)
+	} else if len(splits) == 2 {
+		m3 := HashString(-1467523828, splits[1])
+		result = append(m3.AsIntBytes(), IntToBytes(splits[0])...)
+		result = append(result, m3.AsLongBytes()...)
+		result = append(result, IntToBytes(userId)...)
+	} else {
+		handleWarnPrintf("Error hash with input: " + data)
+	}
+	return result
 }
 
 // Computes a hash code based on the data that have been provided to this hasher

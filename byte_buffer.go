@@ -169,12 +169,17 @@ func (buf *ByteBuffer) AsInt() int {
 	return int(int32(buf.HB[0])&255 | (int32(buf.HB[1])&255)<<8 | (int32(buf.HB[2])&255)<<16 | (int32(buf.HB[3])&255)<<24)
 }
 
-// AsBytes() Returns the first four bytes of this hash code as a byte array.
-func (buf *ByteBuffer) AsBytes() []byte {
+// AsIntBytes() Returns the first four bytes of this hash code as a byte array.
+func (buf *ByteBuffer) AsIntBytes() []byte {
 	return []byte{buf.HB[3], buf.HB[2], buf.HB[1], buf.HB[0]}
 }
 
-// AsBytes() Returns the value of this hash code as a byte array.
+// AsLongBytes() Returns the first eight bytes of this hash code as a byte array.
+func (buf *ByteBuffer) AsLongBytes() []byte {
+	return []byte{buf.HB[7], buf.HB[6], buf.HB[5], buf.HB[4], buf.HB[3], buf.HB[2], buf.HB[1], buf.HB[0]}
+}
+
+// ToBytes() Returns the value of this hash code as a byte array.
 func (buf *ByteBuffer) ToBytes() []byte {
 	return buf.HB
 }

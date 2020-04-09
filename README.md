@@ -14,7 +14,8 @@ Output
   * Note that if the output is considered to be a single hexadecimal number, this hash code's bytes are the big-endian representation of that number. 
 * `Bytes:` 
   * `ToBytes()` Returns the value of this hash code as a byte array.
-  * `AsBytes()` Returns the first four bytes of this hash code as a byte array.
+  * `AsIntBytes()` Returns the first four bytes of this hash code as a byte array.
+  * `AsLongBytes()` Returns the first eight bytes of this hash code as a byte array.
   
 Examples: 
 
@@ -26,7 +27,7 @@ m3_128.AsInt()
 // output: 257976075
 
 // AsBytes() 
-m3_128.AsBytes() 
+m3_128.AsIntBytes() 
 // output:[15 96 103 11]
 
 // ToBytes() 
@@ -46,7 +47,7 @@ m3_128.ToString()
 ```go
 m3_128 := murmur3.HashString(-121254478, "681236075540516864")
 
-key := append(m3_128.AsBytes(), murmur3.IntToBytes("681236075540516864")...)
+key := append(m3_128.AsIntBytes(), murmur3.IntToBytes("681236075540516864")...)
 key = append(key, murmur3.IntToBytes("17480678941457235")...)
 fmt.Println(key)
 // output: [15 96 103 11 9 116 60 153 242 198 16 0 0 62 26 149 186 188 251 83]
